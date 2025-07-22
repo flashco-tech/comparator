@@ -1,0 +1,16 @@
+<!-- templates/mobile.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enter Mobile Number</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h2>Enter your mobile number</h2>
+  <form method="POST">
+    <input type="text" name="mobile" placeholder="10-digit mobile number" required><br><br>
+    <input type="text" name="address" placeholder="Enter your pin code" required><br><br>
+    <input type="submit" value="Continue">
+  </form>
+</body>
+</html>

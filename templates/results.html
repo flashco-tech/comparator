@@ -1,0 +1,27 @@
+<!-- templates/results.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comparison Result</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></link>
+</head>
+<body>
+  <h2>🛒 Cart Summary</h2>
+
+  <h3>Blinkit</h3>
+  <p><strong>Total:</strong> ₹{{ blinkit_data.total }}</p>
+  <ul>
+    {% for item in blinkit_data.cart_items %}
+      <li>{{ item.name }} - ₹{{ item.price }}</li>
+    {% endfor %}
+  </ul>
+
+  <h3>Zepto</h3>
+  <p><strong>Total:</strong> ₹{{ zepto_data.total }}</p>
+  <ul>
+    {% for item in zepto_data.cart_items %}
+      <li>{{ item.name }} - ₹{{ item.price }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!-- templates/otp.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enter OTPs</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></link>
+</head>
+<body>
+  <h2>Enter OTPs for Blinkit and Zepto</h2>
+  <form method="POST">
+    <label for="blinkit_otp">Blinkit OTP:</label><br>
+    <input type="text" name="blinkit_otp" required><br><br>
+
+    <label for="zepto_otp">Zepto OTP:</label><br>
+    <input type="text" name="zepto_otp" required><br><br>
+
+    <input type="submit" value="Submit OTPs">
+  </form>
+</body>
+</html>

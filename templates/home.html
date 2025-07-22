@@ -1,0 +1,15 @@
+<!-- templates/home.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Grocery Comparator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h2>Enter your grocery request</h2>
+  <form method="POST">
+    <textarea name="user_text" rows="5" cols="40" placeholder="e.g., Order aata, rice, maggie"></textarea><br><br>
+    <input type="submit" value="Continue">
+  </form>
+</body>
+</html>

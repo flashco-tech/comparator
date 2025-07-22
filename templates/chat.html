@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShopSmart Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-light: #8BC34A;
+            --primary-dark: #388E3C;
+            --white: #FFFFFF;
+            --light-gray: #F5F5F5;
+            --dark-gray: #333333;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --blinkit-color: #F9D342;
+            --zepto-color: #8A2BE2;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 70vh;
+        }
+        
+        .message {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+        
+        .user-message {
+            justify-content: flex-end;
+        }
+        
+        .bot-message {
+            justify-content: flex-start;
+        }
+        
+        .message-content {
+            padding: 0.8rem 1rem;
+            border-radius: 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .user-message .message-content {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-bottom-right-radius: 4px;
+        }
+        
+        .bot-message .message-content {
+            background-color: var(--light-gray);
+            color: var(--dark-gray);
+            border-bottom-left-radius: 4px;
+        }
+        
+        .typing-indicator {
+            display: flex;
+            padding: 0.8rem 1rem;
+            background-color: var(--light-gray);
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+            margin-bottom: 1rem;
+        }
+        
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
+            animation: bounce 1.3s linear infinite;
+        }
+        
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+        
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.3s;
+            margin-right: 0;
+        }
+        
+        @keyframes bounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-4px);
+            }
+        }
+        
+        .input-container {
+            display: flex;
+            padding: 1rem;
+            background-color: var(--white);
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .message-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 24px;
+            outline: none;
+            font-size: 1rem;
+            resize: none;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        
+        .message-input:focus {
+            border-color: var(--primary-color);
+        }
+        
+        .send-button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        .send-button:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .send-button:disabled {
+            background-color: var(--light-gray);
+            cursor: not-allowed;
+        }
+        
+        .send-icon {
+            width: 20px;
+            height: 20px;
+        }
+        
+        /* OTP Input Styling */
+        .otp-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background-color: var(--light-gray);
+            border-radius: 10px;
+        }
+        
+        .otp-title {
+            font-weight: 500;
+            color: var(--dark-gray);
+        }
+        
+        .otp-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .otp-input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .otp-input-group:first-child {
+            background-color: rgba(249, 211, 66, 0.1);
+            border-left: 3px solid var(--blinkit-color);
+        }
+        
+        .otp-input-group:last-child {
+            background-color: rgba(138, 43, 226, 0.1);
+            border-left: 3px solid var(--zepto-color);
+        }
+        
+        .otp-input {
+            padding: 8px 12px;
+            border: 1px solid var(--primary-light);
+            border-radius: 4px;
+            font-size: 14px;
+            flex-grow: 1;
+        }
+        
+        .otp-submit-single {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .otp-submit-single:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .otp-submit-single:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .comparison-message .markdown {
+            background-color: rgba(76, 175, 80, 0.05);
+            border-left: 4px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        /* Markdown styling */
+        .markdown p {
+            margin-bottom: 0.8rem;
+        }
+        
+        .markdown strong {
+            font-weight: 600;
+        }
+        
+        .markdown ul, .markdown ol {
+            margin-left: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .markdown li {
+            margin-bottom: 0.3rem;
+        }
+        
+        .reset-button {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: 24px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            align-self: flex-end;
+            margin-bottom: 1rem;
+        }
+        
+        .reset-button:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .message-content {
+                max-width: 90%;
+            }
+            
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .chat-messages {
+                padding: 0.8rem;
+            }
+            
+            .input-container {
+                padding: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ShopSmart Assistant</h1>
+    </div>
+    
+    <div class="container">
+        <button class="reset-button" id="resetChat">New Conversation</button>
+        
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        <div class="markdown">
+                            Hi! I'm ShopSmart Assistant. I can help you compare prices between Blinkit and Zepto. What would you like to order today?
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <textarea class="message-input" id="messageInput" placeholder="Type your message here..." rows="1"></textarea>
+                <button class="send-button" id="sendButton" disabled>
+                    <svg class="send-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            const resetButton = document.getElementById('resetChat');
+            
+            let isWaitingForResponse = false;
+            
+            // Auto-resize textarea
+            messageInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';                
+                // Enable/disable send button based on input
+                sendButton.disabled = this.value.trim() === '';
+            });
+            
+            // Handle Enter key
+            messageInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (!sendButton.disabled && !isWaitingForResponse) {
+                        sendMessage();
+                    }
+                }
+            });
+            
+            // Send message on button click
+            sendButton.addEventListener('click', function() {
+                if (!isWaitingForResponse) {
+                    sendMessage();
+                }
+            });
+            
+            // Reset chat
+            resetButton.addEventListener('click', function() {
+                fetch('/reset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        chatMessages.innerHTML = `
+                            <div class="message bot-message">
+                                <div class="message-content">
+                                    <div class="markdown">
+                                        Hi! I'm ShopSmart Assistant. I can help you compare prices between Blinkit and Zepto. What would you like to order today?
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            });
+            
+            function sendMessage() {
+                const message = messageInput.value.trim();
+                if (message === '') return;
+                
+                // Add user message to chat
+                addMessage(message, 'user');
+                
+                // Clear input
+                messageInput.value = '';
+                messageInput.style.height = 'auto';
+                sendButton.disabled = true;
+                
+                // Show typing indicator
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'typing-indicator';
+                typingIndicator.innerHTML = '<span></span><span></span><span></span>';
+                chatMessages.appendChild(typingIndicator);
+                scrollToBottom();
+                
+                isWaitingForResponse = true;
+                
+                // Send message to server
+                fetch('/stream', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message, type: 'text' })
+                })
+                .then(response => {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder();
+                    
+                    // Remove typing indicator
+                    chatMessages.removeChild(typingIndicator);
+                    
+                    function readStream() {
+                        return reader.read().then(({ done, value }) => {
+                            if (done) {
+                                isWaitingForResponse = false;
+                                return;
+                            }
+                            
+                            const chunk = decoder.decode(value);
+                            
+                            // Process SSE format
+                            const lines = chunk.split('\n');
+                            let jsonData = '';
+                            
+                            for (const line of lines) {
+                                if (line.startsWith('data: ')) {
+                                    jsonData = line.substring(6); // Remove 'data: ' prefix
+                                    try {
+                                        const data = JSON.parse(jsonData);
+                                        handleBotResponse(data);
+                                    } catch (e) {
+                                        console.error('Error parsing JSON:', e, jsonData);
+                                    }
+                                }
+                            }
+                            
+                            return readStream();
+                        });
+                    }
+                    
+                    return readStream();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    addMessage('Sorry, there was an error processing your request. Please try again.', 'bot');
+                    isWaitingForResponse = false;
+                });
+            }
+            
+            function handleBotResponse(data) {
+                switch (data.type) {
+                    case 'text':
+                        addMessage(data.content, 'bot');
+                        break;
+                        
+                    case 'comparison':
+                        // Enhanced comparison display
+                        addMessage(data.content, 'bot', true);
+                        break;
+                        
+                    case 'input_request':
+                        addMessage(data.content, 'bot');
+                        // Focus on input field and add placeholder based on input_type
+                        if (data.input_type === 'mobile') {
+                            messageInput.placeholder = 'Enter your 10-digit mobile number...';
+                            messageInput.focus();
+                        } else if (data.input_type === 'address') {
+                            messageInput.placeholder = 'Enter your delivery address...';
+                            messageInput.focus();
+                        }
+                        break;
+                        
+                    case 'otp_request':
+                        addOtpInput(data.content || 'Please enter the OTPs you received:');
+                        break;
+                        
+                    default:
+                        addMessage(data.content, 'bot');
+                }
+            }
+            
+            function addMessage(content, sender, isComparison = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                if (isComparison) messageDiv.classList.add('comparison-message');
+                
+                const messageContent = document.createElement('div');
+                messageContent.className = 'message-content';
+                
+                const markdownDiv = document.createElement('div');
+                markdownDiv.className = 'markdown';
+                markdownDiv.innerHTML = marked.parse(content);
+                
+                messageContent.appendChild(markdownDiv);
+                messageDiv.appendChild(messageContent);
+                chatMessages.appendChild(messageDiv);
+                
+                scrollToBottom();
+            }
+            
+            function addOtpInput(title = 'Please enter the OTPs you received:') {
+                const otpContainer = document.createElement('div');
+                otpContainer.className = 'message bot-message';
+                
+                otpContainer.innerHTML = `
+                    <div class="message-content">
+                        <div class="otp-container">
+                            <div class="otp-title">${title}</div>
+                            <div class="otp-inputs">
+                                <div class="otp-input-group">
+                                    <label for="blinkitOtp">Blinkit OTP:</label>
+                                    <input type="text" id="blinkitOtp" class="otp-input" placeholder="Enter Blinkit OTP">
+                                    <button class="otp-submit-single" id="blinkitOtpSubmit">Submit</button>
+                                </div>
+                                <div class="otp-input-group">
+                                    <label for="zeptoOtp">Zepto OTP:</label>
+                                    <input type="text" id="zeptoOtp" class="otp-input" placeholder="Enter Zepto OTP">
+                                    <button class="otp-submit-single" id="zeptoOtpSubmit">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                chatMessages.appendChild(otpContainer);
+                scrollToBottom();
+                
+                // Add event listeners to individual OTP submit buttons
+                document.getElementById('blinkitOtpSubmit').addEventListener('click', function() {
+                    const blinkitOtp = document.getElementById('blinkitOtp').value.trim();
+                    if (blinkitOtp) {
+                        addMessage(`Blinkit OTP: ${blinkitOtp}`, 'user');
+                        
+                        // Send Blinkit OTP to server
+                        fetch('/stream', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ 
+                                message: blinkitOtp,
+                                type: 'blinkit_otp'
+                            })
+                        })
+                        .then(response => {
+                            const reader = response.body.getReader();
+                            const decoder = new TextDecoder();
+                            
+                            function readStream() {
+                                return reader.read().then(({ done, value }) => {
+                                    if (done) return;
+                                    
+                                    const chunk = decoder.decode(value);
+                                    
+                                    // Process SSE format
+                                    const lines = chunk.split('\n');
+                                    let jsonData = '';
+                                    
+                                    for (const line of lines) {
+                                        if (line.startsWith('data: ')) {
+                                            jsonData = line.substring(6); // Remove 'data: ' prefix
+                                            try {
+                                                const data = JSON.parse(jsonData);
+                                                handleBotResponse(data);
+                                            } catch (e) {
+                                                console.error('Error parsing JSON:', e, jsonData);
+                                            }
+                                        }
+                                    }
+                                    
+                                    return readStream();
+                                });
+                            }
+                            
+                            return readStream();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                        
+                        // Disable the button after submission
+                        this.disabled = true;
+                        document.getElementById('blinkitOtp').disabled = true;
+                    }
+                });
+                
+                document.getElementById('zeptoOtpSubmit').addEventListener('click', function() {
+                    const zeptoOtp = document.getElementById('zeptoOtp').value.trim();
+                    if (zeptoOtp) {
+                        addMessage(`Zepto OTP: ${zeptoOtp}`, 'user');
+                        
+                        // Send Zepto OTP to server
+                        fetch('/stream', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ 
+                                message: zeptoOtp,
+                                type: 'zepto_otp'
+                            })
+                        })
+                        .then(response => {
+                            const reader = response.body.getReader();
+                            const decoder = new TextDecoder();
+                            
+                            function readStream() {
+                                return reader.read().then(({ done, value }) => {
+                                    if (done) return;
+                                    
+                                    const chunk = decoder.decode(value);
+                                    
+                                    // Process SSE format
+                                    const lines = chunk.split('\n');
+                                    let jsonData = '';
+                                    
+                                    for (const line of lines) {
+                                        if (line.startsWith('data: ')) {
+                                            jsonData = line.substring(6); // Remove 'data: ' prefix
+                                            try {
+                                                const data = JSON.parse(jsonData);
+                                                handleBotResponse(data);
+                                            } catch (e) {
+                                                console.error('Error parsing JSON:', e, jsonData);
+                                            }
+                                        }
+                                    }
+                                    
+                                    return readStream();
+                                });
+                            }
+                            
+                            return readStream();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                        
+                        // Disable the button after submission
+                        this.disabled = true;
+                        document.getElementById('zeptoOtp').disabled = true;
+                    }
+                });
+                
+                // If both OTPs are submitted, remove the container
+                const checkBothSubmitted = function() {
+                    const blinkitSubmitted = document.getElementById('blinkitOtp').disabled;
+                    const zeptoSubmitted = document.getElementById('zeptoOtp').disabled;
+                    
+                    if (blinkitSubmitted && zeptoSubmitted) {
+                        otpContainer.remove();
+                    }
+                };
+                
+                document.getElementById('blinkitOtpSubmit').addEventListener('click', checkBothSubmitted);
+                document.getElementById('zeptoOtpSubmit').addEventListener('click', checkBothSubmitted);
+            }
+            
+            function scrollToBottom() {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+        });
+    </script>
+</body>
+</html>

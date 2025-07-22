@@ -1,0 +1,14 @@
+{
+  "merchant": "blinkit",
+  "total": 69,
+  "cart_items": [
+    {
+      "name": "Nandini Toned Milk",
+      "price": 24
+    },
+    {
+      "name": "Too Yumm Smoking Hot Bhoot Karare Crisps (Bhut Jolokia Chillies)",
+      "price": 18
+    }
+  ]
+}
