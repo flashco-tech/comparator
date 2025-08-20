@@ -30,7 +30,7 @@ search_items = [
     "kurkure"
 ]
 
-PHONE_NUMBER = "9334727093"
+PHONE_NUMBER = ""
 
 def run_zepto(PHONE_NUMBER,search_items):
     print(f"Starting Zepto search for products: {search_items}")
