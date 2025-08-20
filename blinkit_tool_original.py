@@ -33,7 +33,7 @@ search_items = [
 ADDRESS_TO_SEARCH = "560102"
 
 # ✅ Default phone number for login
-PHONE_NUMBER = "9334727093"
+PHONE_NUMBER = ""
 def run_blinkit(PHONE_NUMBER,search_items,ADDRESS_TO_SEARCH):
     # Parse command line arguments
     if len(sys.argv) >= 2:
